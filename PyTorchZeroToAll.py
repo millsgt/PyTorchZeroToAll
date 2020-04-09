@@ -9,6 +9,7 @@ https://www.youtube.com/watch?v=SKq-pmkekTk&list=PLlMkM4tgfjnJ3I-dbhO9JTw7gNty6o
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+from torch.autograd import Variable
 
 def main():
     """
@@ -16,7 +17,7 @@ def main():
     return : xx : xx
     -------
     """    
-    Lesson_3()    
+    Lesson_4()    
 
 # ----------------------------
 # keyword(s): Lesson_1
@@ -30,7 +31,7 @@ def Lesson_1():
 
 # ----------------------------
 # keyword(s): Lesson_3
-def Lesson_3():
+def Lesson_4():
     """
     param w : weight value
     param x : input value    
@@ -41,7 +42,7 @@ def Lesson_3():
     """    
     x_data = [1.0, 2.0, 3.0]
     y_data = [2.0, 4.0, 6.0]
-    w = 1.0 # init w (random)
+    w = Variable(torch.Tensor([1.0]), requires_grad=True)
     
     def forward(x):
         """   
@@ -56,22 +57,22 @@ def Lesson_3():
         -------
         """        
         y_pred = forward(x)
-        return (y_pred - y)**2
-    
-    def gradient(x, y):
-        return 2 * x * (x * w - y)
-    
+        return (y_pred - y)**2    
+   
     # Before training
     print("Prediction (before training)", "4 hours of study:", forward(4))    
     
     # Training loop
     for epoch in range(10):
         for x_val, y_val in zip(x_data, y_data):
-            grad = gradient(x_val, y_val)
-            w -= 0.01 * grad
-            print("\tgrad: ", x_val, y_val, round(grad, 2))
             l = loss(x_val, y_val)
-    print("Progress:", epoch, "w=", round(w, 2), "loss=", round(l,2))
+            l.backward()
+            print("\tgrad: ", x_val, y_val, w.grad.data[0])
+            w.data -= 0.01 * w.grad.data
+            # manually zero gradiaents afer updating weights
+            w.grad.data.zero_()
+            
+    print("Progress:", epoch, l.data[0])
     
     # After training
     print("Prediction (after training)", "4 hours of study:", forward(4))    
