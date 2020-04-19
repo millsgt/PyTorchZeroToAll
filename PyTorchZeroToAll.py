@@ -30,7 +30,7 @@ def Lesson_1():
     print(torch.__version__)    
 
 # ----------------------------
-# keyword(s): Lesson_3
+# keyword(s): Lesson_4
 def Lesson_4():
     """
     param w : weight value
